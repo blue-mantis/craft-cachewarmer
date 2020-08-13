@@ -3,6 +3,7 @@
 namespace bluemantis\cachewarmer\services;
 
 use bluemantis\cachewarmer\CacheWarmer;
+use bluemantis\cachewarmer\events\CacheWarmEvent;
 use bluemantis\cachewarmer\jobs\CacheWarmerTask;
 use craft\base\Component;
 use craft\commerce\elements\Product;
@@ -13,6 +14,8 @@ use Psr\Log\LogLevel;
 
 class CacheWarmerService extends Component
 {
+    const EVENT_BEFORE_CACHEWARM = "beforeCacheWarm";
+
     public function run()
     {
         $settings = CacheWarmer::getInstance()->getSettings();
@@ -22,7 +25,11 @@ class CacheWarmerService extends Component
         $entriesToCache = [];
         $productsToCache = [];
 
-        $entries = [];
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_CACHEWARM)) {
+            $this->trigger(self::EVENT_BEFORE_CACHEWARM, new CacheWarmEvent([
+                'settings' => &$settings,
+            ]));
+        }
 
         // Loop through all relevant sections, grouped by site
         foreach ($settings->enabledSections as $siteId => $site) {
