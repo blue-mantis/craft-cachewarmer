@@ -1,0 +1,52 @@
+{
+    "name": "bluemantis/cachewarmer",
+    "description": "A plugin for running a series of cache warming tasks",
+    "type": "craft-plugin",
+    "version": "1.0.1",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "cache warmer"
+    ],
+    "support": {
+        "docs": "https://github.com/https://github.com/blue-mantis/cachewarmer/cachewarmer/blob/master/README.md",
+        "issues": "https://github.com/https://github.com/blue-mantis/cachewarmer/cachewarmer/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bluemantis",
+            "homepage": "https://bluemantis.com"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0",
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "require-dev": {
+      "craftcms/cms": "^3.2.0",
+      "craftcms/commerce": "^3.2.0",
+      "codeception/codeception": "^3.0",
+      "vlucas/phpdotenv": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "bluemantis\\cachewarmer\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Cache Warmer",
+        "handle": "cachewarmer",
+        "developer": "Bluemantis",
+        "developerUrl": "https://bluemantis.com",
+        "documentationUrl": "https://github.com/https://github.com/blue-mantis/cachewarmer/cachewarmer/blob/master/README.md",
+        "changelogUrl": "https://raw.githubusercontent.com/https://github.com/blue-mantis/cachewarmer/cachewarmer/master/CHANGELOG.md",
+        "components": {
+            "cacheWarmer": "bluemantis\\cachewarmer\\services\\CacheWarmerService",
+            "log": "bluemantis\\cachewarmer\\services\\LogService"
+        },
+        "class": "bluemantis\\cachewarmer\\CacheWarmer"
+    }
+}

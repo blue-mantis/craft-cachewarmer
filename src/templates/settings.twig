@@ -1,0 +1,127 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Cache Warmer plugin for Craft CMS 3.x
+ *
+ * Cache Warmer Settings.twig
+ *
+ * @author    Bluemantis
+ * @copyright Copyright (c) 2020 Bluemantis
+ * @link      https://bluemantis.com
+ * @package   CacheWarmer
+ * @since     0.1
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("bluemantis\\cachewarmer\\assetbundles\\cachewarmer\\CacheWarmerAsset") %}
+
+{{ forms.textField({
+  label: "Max items per batch"|t,
+  id: 'itemsPerBatch',
+  name: 'itemsPerBatch',
+  instructions: "How many items to do as part of each batch job. 1 will create a queued job for each individual URL, 100 will create jobs of batches of 100, etc. If you're using the asyncqueues plugin this number can be as high as you want, but otherwise keep it reasonably low."|t,
+  value: settings.itemsPerBatch,
+  autofocus: true,
+  errors: settings.getErrors('itemsPerBatch'),
+  type: 'number'
+}) }}
+
+{{ forms.textField({
+  label: "Time between requests (seconds)"|t,
+  id: 'timeBetweenRequests',
+  name: 'timeBetweenRequests',
+  instructions: "You may want to add some time between requests to ensure you're not slowing down the site. Leave at zero to request as soon as the previous one completes."|t,
+  value: settings.timeBetweenRequests,
+  autofocus: true,
+  errors: settings.getErrors('timeBetweenRequests'),
+  type: 'number'
+}) }}
+
+<h2>Sections</h2>
+
+<div id="nosections"{% if sectionData|length %} class="hidden"{% endif %}>
+  <p>{{ "No sections exist yet."|t }}</p>
+</div>
+
+{% if sectionData|length %}
+  {% for group in sectionData %}
+    {% if group.sections|length %}
+      {% set siteId = group.site.id %}
+      {% if sectionData|length > 1 %}
+        <h4 style="margin-bottom:10px;">{{ group.site.name }}</h4>
+      {% endif %}
+      <table id="sections" class="data fullwidth collapsible" style="margin-bottom:50px;">
+        <thead>
+        <th scope="col" class="thin">Include</th>
+        <th scope="col">{{ "Name"|t }}</th>
+        <th scope="col" style="width:100px;">{{ "Pages"|t }}</th>
+        {#<th scope="col">{{ "URL Format"|t }}</th>#}
+        </thead>
+        <tbody>
+        {% for sectionData in group.sections %}
+          {% set handle = sectionData.section.handle %}
+          {% set sectionSettings = settings.enabledSections[siteId][handle] is defined ? settings.enabledSections[siteId][handle] : false %}
+
+          <tr data-id="{{ sectionData.section.id }}" data-name="{{ sectionData.section.name|t }}">
+            <td class="thin">
+              {% set fieldname = 'enabledSections[' ~ siteId ~ '][' ~ handle ~ '][enabled]' %}
+              {% set enabled = (sectionSettings.enabled is defined and sectionSettings.enabled is not empty ? sectionSettings.enabled : false) %}
+              {{ forms.lightswitch({
+                name: fieldname,
+                on:   enabled,
+              }) }}
+            </td>
+            <th scope="row" data-title="{{ 'Name'|t }}"><a href="{{ url('settings/sections/' ~ sectionData.section.id) }}">{{ sectionData.section.name|t }}</a></th>
+            <td data-title="{{ 'Entries'|t }}">{{ sectionData.count }}</td>
+            {#<td data-title="{{ 'URL Format'|t }}" dir="ltr">
+              {%- if section.isHomepage() -%}
+                <div data-icon="home" title="{{ 'Homepage'|t }}"></div>
+              {%- else -%}
+                {{ section.getUriFormat() }}
+              {%- endif -%}
+            </td>#}
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% if productTypesData|length %}
+  {% for group in productTypesData %}
+    {% if group.types|length %}
+      {% set siteId = group.site.id %}
+      <h2>Commerce Product Types</h2>
+      <table id="productTypes" class="data fullwidth collapsible">
+        <thead>
+          <th scope="col" class="thin">Include</th>
+          <th scope="col">{{ "Name"|t }}</th>
+          <th scope="col" style="width:100px;">{{ "Pages"|t }}</th>
+        </thead>
+        <tbody>
+        {% for productTypeData in group.types %}
+          {% set id = productTypeData.type.id %}
+
+          {% set productTypeSettings = settings.enabledProductTypes[siteId][id] is defined ? settings.enabledProductTypes[siteId][id] : false %}
+
+          <tr data-id="{{ productTypeData.type.id }}" data-name="{{ productTypeData.type.name|t }}">
+            <td class="thin">
+              {% set fieldname = 'enabledProductTypes[' ~ siteId ~ '][' ~ id ~ '][enabled]' %}
+              {% set enabled = (productTypeSettings.enabled is defined and productTypeSettings.enabled is not empty ? productTypeSettings.enabled : false) %}
+              {{ forms.lightswitch({
+                name: fieldname,
+                on:   enabled,
+              }) }}
+            </td>
+            <th scope="row" data-title="{{ 'Name'|t }}"><a href="{{ url('commerce/settings/producttypes/' ~ productTypeData.type.id) }}">{{ productTypeData.type.name|t }}</a></th>
+            <td data-title="{{ 'Entries'|t }}">{{ productTypeData.count }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  {% endfor %}
+{% endif %}
