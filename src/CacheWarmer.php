@@ -1,12 +1,4 @@
 <?php
-/**
- * Cache Warmer plugin for Craft CMS 3.x
- *
- * A plugin for running a series of cache warming tasks
- *
- * @link      https://bluemantis.com
- * @copyright Copyright (c) 2020 Bluemantis
- */
 
 namespace bluemantis\cachewarmer;
 
@@ -28,15 +20,6 @@ use craft\events\RegisterUrlRulesEvent;
 
 use yii\base\Event;
 
-/**
- * Class CacheWarmer
- *
- * @author    Bluemantis
- * @package   CacheWarmer
- * @since     0.1
- *
- * @property  CacheWarmerServiceService $cacheWarmerService
- */
 class CacheWarmer extends Plugin
 {
     // Static Properties
