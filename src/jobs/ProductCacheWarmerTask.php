@@ -22,6 +22,7 @@ class ProductCacheWarmerTask extends BaseJob
 
     protected function defaultDescription(): string
     {
-        return Craft::t('cachewarmer', 'Caching ' . count($this->productIds) . ' product pages');
+        $count = (is_array($this->productIds) ? count($this->productIds) : 1);
+        return Craft::t('cachewarmer', 'Cache warming ' . $count . ' product page' . ($count===1 ? '' : 's'));
     }
 }

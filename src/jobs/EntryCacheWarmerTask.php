@@ -23,6 +23,7 @@ class EntryCacheWarmerTask extends BaseJob
     protected function defaultDescription(): string
     {
         $site = Craft::$app->getSites()->getSiteById($this->siteId);
-        return Craft::t('cachewarmer', 'Caching ' . count($this->entryIds) . ' entry pages for ' . $site->name);
+        $count = (is_array($this->entryIds) ? count($this->entryIds) : 1);
+        return Craft::t('cachewarmer', 'Cache warming ' . $count . ' entry page' . ($count===1 ? '' : 's') . ' for ' . $site->name);
     }
 }

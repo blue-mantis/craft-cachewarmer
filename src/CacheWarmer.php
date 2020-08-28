@@ -2,6 +2,7 @@
 
 namespace bluemantis\cachewarmer;
 
+use bluemantis\cachewarmer\jobs\EntryCacheWarmerTask;
 use bluemantis\cachewarmer\services\CacheWarm;
 use bluemantis\cachewarmer\models\Settings;
 
@@ -11,6 +12,9 @@ use craft\base\Plugin;
 use craft\commerce\elements\Product;
 use craft\commerce\Plugin as CommercePlugin;
 use craft\elements\Entry;
+use craft\events\ElementEvent;
+use craft\helpers\ElementHelper;
+use craft\services\Elements;
 use craft\services\Plugins;
 use craft\events\PluginEvent;
 use craft\console\Application as ConsoleApplication;
@@ -67,6 +71,8 @@ class CacheWarmer extends Plugin
             $this->controllerNamespace = 'bluemantis\cachewarmer\console\controllers';
         }
 
+        $settings = $this->getSettings();
+
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
@@ -91,6 +97,23 @@ class CacheWarmer extends Plugin
                 }
             }
         );
+
+        if ($settings->warmChangedElements) {
+            Event::on(
+                Elements::class,
+                Elements::EVENT_AFTER_SAVE_ELEMENT,
+                function (ElementEvent $event) {
+                    $element = $event->element;
+
+                    if (!ElementHelper::isDraftOrRevision($element)) {
+                        Craft::$app->getQueue()->push(new EntryCacheWarmerTask([
+                            'entryIds' => $element->id,
+                            'siteId' => $element->siteId,
+                        ]));
+                    }
+                }
+            );
+        }
 
         Craft::info(
             Craft::t(

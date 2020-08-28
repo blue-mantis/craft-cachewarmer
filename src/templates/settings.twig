@@ -39,6 +39,34 @@
   type: 'number'
 }) }}
 
+{{ forms.lightswitchField({
+  id: 'warmChangedElements',
+  name: 'warmChangedElements',
+  label: 'Attempt to automatically cachewarm entries when saved?' | t,
+  on: settings.warmChangedElements,
+  instructions: 'If you\'re running a long import and calling this plugin manually at the end, this may double them up.' | t
+}) }}
+
+{#<div class="field">
+  <div class="heading">
+    <label id="settings-warmChangedElements-label" for="settings-warmChangedElements"></label>
+    <div class="instructions"><p>If you're running a long import and calling this plugin manually at the end, this may conflict</p>
+    </div>
+  </div>
+  {{ forms.lightswitch({
+    onLabel: "Should the plugin attempt to cachewarm entries automatically when they're saved?"|t,
+    offLabel: "Should the plugin attempt to cachewarm entries automatically when they're saved?"|t,
+    id: 'warmChangedElements',
+    name: 'warmChangedElements',
+    instructions: "If you're running a long import and calling this plugin manually at the end, this may double them up"|t,
+    value: settings.warmChangedElements,
+    autofocus: true,
+    errors: settings.getErrors('warmChangedElements'),
+  }) }}
+</div>#}
+
+<div style="margin-bottom:60px;"></div>
+
 <h2>Sections</h2>
 
 <div id="nosections"{% if sectionData|length %} class="hidden"{% endif %}>

@@ -46,6 +46,7 @@ Or you can pipe in an array of elements to only warm those
 
 ## Cache Warmer Roadmap
 
-*  Adding an option to automatically warm the cache of an element on save
+* Adding an option to automatically warm the cache of an element on save
+* Consider a way of preventing doubling up cachewarm requests on, say, an import where you want it to run at the end and not auto run after every element is saved
 
 Brought to you by [Bluemantis](https://bluemantis.com)
