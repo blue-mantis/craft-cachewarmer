@@ -24,20 +24,28 @@ To install the plugin, follow these instructions.
 
 ## Cache Warmer Overview
 
--Insert text here-
+This plugin provides a bunch of cache warming tasks. More details to follow.
 
 ## Configuring Cache Warmer
 
--Insert text here-
+Go to Settings, and look for the cachewarmer icon at the bottom. More details on options to follow.
 
 ## Using Cache Warmer
 
--Insert text here-
+There's currently 2 ways to kick off a cachewarm:
+
+You can call the service method directly to run a cachewarm based on the configuration set in the settings above
+
+    \bluemantis\cachewarmer\CacheWarmer::$plugin->cacheWarm->run();
+    
+Or you can pipe in an array of elements to only warm those
+
+    \bluemantis\cachewarmer\CacheWarmer::$plugin->cacheWarm->elements([$element]);
+    
+(in the second example the $queue parameter can be safely ignored, this is there to update progress when this is running as a queued job)
 
 ## Cache Warmer Roadmap
 
-Some things to do, and ideas for potential features:
-
-* Release it
+*  Adding an option to automatically warm the cache of an element on save
 
 Brought to you by [Bluemantis](https://bluemantis.com)
