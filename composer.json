@@ -44,7 +44,7 @@
         "documentationUrl": "https://github.com/https://github.com/blue-mantis/craft-cachewarmer/cachewarmer/blob/master/README.md",
         "changelogUrl": "https://raw.githubusercontent.com/https://github.com/blue-mantis/craft-cachewarmer/cachewarmer/master/CHANGELOG.md",
         "components": {
-            "cacheWarmer": "bluemantis\\cachewarmer\\services\\CacheWarmerService",
+            "cacheWarm": "bluemantis\\cachewarmer\\services\\CacheWarm",
             "log": "bluemantis\\cachewarmer\\services\\LogService"
         },
         "class": "bluemantis\\cachewarmer\\CacheWarmer"

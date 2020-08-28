@@ -12,7 +12,7 @@ use craft\queue\QueueInterface;
 use GuzzleHttp\Client;
 use Psr\Log\LogLevel;
 
-class CacheWarmerService extends Component
+class CacheWarm extends Component
 {
     const EVENT_BEFORE_CACHEWARM = "beforeCacheWarm";
 
@@ -67,7 +67,7 @@ class CacheWarmerService extends Component
         ]));
     }
 
-    public function warmCache(array $elements, QueueInterface $queue = null) {
+    public function elements(array $elements, QueueInterface $queue = null) {
         $settings = CacheWarmer::getInstance()->getSettings();
         $total = count($elements);
         $count = 1;

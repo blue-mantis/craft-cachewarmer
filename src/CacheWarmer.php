@@ -2,8 +2,7 @@
 
 namespace bluemantis\cachewarmer;
 
-use bluemantis\cachewarmer\services\CacheWarmerService;
-use bluemantis\cachewarmer\services\CacheWarmerService as CacheWarmerServiceService;
+use bluemantis\cachewarmer\services\CacheWarm;
 use bluemantis\cachewarmer\models\Settings;
 
 use bluemantis\cachewarmer\services\LogService;
@@ -60,7 +59,7 @@ class CacheWarmer extends Plugin
         self::$plugin = $this;
 
         $this->setComponents([
-            'cacheWarmerService' => CacheWarmerService::class,
+            'cacheWarm' => CacheWarm::class,
             'logService' => LogService::class,
         ]);
 
