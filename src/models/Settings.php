@@ -15,6 +15,8 @@ class Settings extends Model
 
     public $enabledSections = [];
 
+    public $enabledCategoryGroups = [];
+
     public $enabledProductTypes = [];
 
     public function rules()

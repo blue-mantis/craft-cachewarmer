@@ -34,7 +34,7 @@ Go to Settings, and look for the cachewarmer icon at the bottom. More details on
 
 There's currently 2 ways to kick off a cachewarm:
 
-You can call the service method directly to run a cachewarm based on the configuration set in the settings above
+You can call the service method directly to run a cachewarm based on the configuration set in your settings
 
     \bluemantis\cachewarmer\CacheWarmer::$plugin->cacheWarm->run();
     
@@ -46,7 +46,7 @@ Or you can pipe in an array of elements to only warm those
 
 ## Cache Warmer Roadmap
 
-* Adding an option to automatically warm the cache of an element on save
+* Either add a page for displaying logs or simplify the logger service (or both)
 * Consider a way of preventing doubling up cachewarm requests on, say, an import where you want it to run at the end and not auto run after every element is saved
 
 Brought to you by [Bluemantis](https://bluemantis.com)

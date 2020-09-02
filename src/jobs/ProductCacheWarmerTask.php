@@ -16,6 +16,8 @@ class ProductCacheWarmerTask extends BaseJob
 
     public function execute($queue)
     {
+        sleep(10);
+        return;
         $products = Product::find()->siteId($this->siteId)->id($this->entryIds)->all();
         CacheWarmer::$plugin->cacheWarm->elements($products);
     }

@@ -5,12 +5,11 @@ namespace bluemantis\cachewarmer\jobs;
 use bluemantis\cachewarmer\CacheWarmer;
 
 use Craft;
-use craft\commerce\elements\Product;
-use craft\elements\Entry;
 use craft\queue\BaseJob;
 
 class CacheWarmerTask extends BaseJob
 {
+    public $categoryIds = [];
     public $entryIds = [];
     public $productIds = [];
 
@@ -26,6 +25,18 @@ class CacheWarmerTask extends BaseJob
                 // Fire out a queue job
                 \Craft::$app->queue->push(new EntryCacheWarmerTask([
                     'entryIds' => $entryBatch,
+                    'siteId' => $siteId,
+                ]));
+            }
+        }
+
+        // Chunk off the entries in no more than the max batch number set in the settings
+        foreach ($this->categoryIds as $siteId => $categoryIds) {
+            $categoryBatches = array_chunk($categoryIds, $batchCount);
+            foreach ($categoryBatches as $categoryBatch) {
+                // Fire out a queue job
+                \Craft::$app->queue->push(new CategoryCacheWarmerTask([
+                    'categoryIds' => $categoryBatch,
                     'siteId' => $siteId,
                 ]));
             }

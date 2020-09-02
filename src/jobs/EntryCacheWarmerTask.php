@@ -16,6 +16,8 @@ class EntryCacheWarmerTask extends BaseJob
 
     public function execute($queue)
     {
+        sleep(10);
+        return;
         $entries = Entry::find()->siteId($this->siteId)->id($this->entryIds)->all();
         CacheWarmer::$plugin->cacheWarm->elements($entries, $queue);
     }

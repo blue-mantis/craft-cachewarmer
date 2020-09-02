@@ -7,6 +7,7 @@ use bluemantis\cachewarmer\events\CacheWarmEvent;
 use bluemantis\cachewarmer\jobs\CacheWarmerTask;
 use craft\base\Component;
 use craft\commerce\elements\Product;
+use craft\elements\Category;
 use craft\elements\Entry;
 use craft\queue\QueueInterface;
 use GuzzleHttp\Client;
@@ -23,6 +24,7 @@ class CacheWarm extends Component
         $enabledProductTypes = [];
 
         $entriesToCache = [];
+        $categoriesToCache = [];
         $productsToCache = [];
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_CACHEWARM)) {
@@ -46,6 +48,18 @@ class CacheWarm extends Component
             }
         }
 
+        foreach ($settings->enabledCategoryGroups as $siteId => $site) {
+            // Filter out any that aren't enabled
+            $enabledCategoryGroups[$siteId] = array_filter($settings->enabledCategoryGroups[$siteId], function ($item) {
+                return !empty($item['enabled']);
+            });
+
+            // Assuming there are any sections enabled, grab the ids
+            if (count($enabledCategoryGroups[$siteId])) {
+                $categoriesToCache[$siteId] = Category::find()->siteId($siteId)->group(array_keys($enabledCategoryGroups[$siteId]))->limit(null)->ids();
+            }
+        }
+
         // Loop through all relevant product types, grouped by site
         foreach ($settings->enabledProductTypes as $siteId => $site) {
             $enabledProductTypes[$siteId] = array_filter($settings->enabledProductTypes[$siteId], function ($item) {
@@ -64,6 +78,7 @@ class CacheWarm extends Component
         \Craft::$app->queue->push(new CacheWarmerTask([
             'productIds' => $productsToCache,
             'entryIds' => $entriesToCache,
+            'categoryIds' => $categoriesToCache,
         ]));
     }
 
@@ -91,11 +106,12 @@ class CacheWarm extends Component
 
                 // If we've been passed a valid queue object, update the progress
                 if ($queue) {
-                    $progress = floor(($count*100)/$total);
+                    $progress = ceil(($count*100)/$total);
                     $queue->setProgress($progress, $progress.'% complete');
                 }
                 $count++;
             } catch (\Exception $e) {
+                //throw $e;
                 CacheWarmer::$plugin->logService->write('Failed to cache ' . $url . ': ' . $e->getMessage(), LogLevel::ERROR);
             }
         }

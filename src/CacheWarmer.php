@@ -11,6 +11,7 @@ use Craft;
 use craft\base\Plugin;
 use craft\commerce\elements\Product;
 use craft\commerce\Plugin as CommercePlugin;
+use craft\elements\Category;
 use craft\elements\Entry;
 use craft\events\ElementEvent;
 use craft\helpers\ElementHelper;
@@ -145,9 +146,11 @@ class CacheWarmer extends Plugin
 
         $sections = [];
         $productTypes = [];
+        $categoryGroups = [];
 
         $sites = Craft::$app->getSites()->getAllSites();
         $allSections = Craft::$app->getSections()->getAllSections();
+        $allCategoryGroups = Craft::$app->getCategories()->getAllGroups();
 
         if ($commercePlugin) {
             $allProductTypes = CommercePlugin::getInstance()->getProductTypes()->getAllProductTypes();
@@ -167,6 +170,20 @@ class CacheWarmer extends Plugin
                     $sections[$site->id]['sections'][$section->handle]['section'] = $section;
                     // Total entries for this section
                     $sections[$site->id]['sections'][$section->handle]['count'] = Entry::find()->siteId($site->id)->sectionId($section->id)->count();
+                }
+            }
+
+            $categoryGroups[$site->id] = [
+                'site' => $site,
+                'categoryGroups' => [],
+            ];
+            foreach ($allCategoryGroups as $categoryGroup) {
+                // Check if the category group has a URI format, otherwise there'll be no page to cache
+                if (isset($categoryGroup->siteSettings[$site->id]) && $categoryGroup->siteSettings[$site->id] && $categoryGroup->siteSettings[$site->id]->uriFormat) {
+                    $categoryGroups[$site->id]['categoryGroups'][$categoryGroup->handle] = [];
+                    $categoryGroups[$site->id]['categoryGroups'][$categoryGroup->handle]['categoryGroup'] = $categoryGroup;
+                    // Total entries for this category group
+                    $categoryGroups[$site->id]['categoryGroups'][$categoryGroup->handle]['count'] = Category::find()->siteId($site->id)->groupId($categoryGroup->id)->count();
                 }
             }
 
@@ -191,8 +208,9 @@ class CacheWarmer extends Plugin
             'cachewarmer/settings',
             [
                 'settings' => $this->getSettings(),
-                'sectionData' => $sections,
-                'productTypesData' => $productTypes,
+                'sections' => $sections,
+                'categoryGroups' => $categoryGroups,
+                'productTypes' => $productTypes,
             ]
         );
     }

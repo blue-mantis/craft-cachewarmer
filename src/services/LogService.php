@@ -12,8 +12,6 @@ namespace bluemantis\cachewarmer\services;
 
 use Craft;
 use craft\base\Component;
-use DateInterval;
-use DateTime;
 use Psr\Log\LogLevel;
 
 class LogService extends Component
@@ -22,7 +20,13 @@ class LogService extends Component
     protected $logFile;
 
     public function __construct(array $config = []) {
-        $this->logPath = CRAFT_LOG_PATH . '/cachewarmer';
+        $this->logPath = CRAFT_BASE_PATH . '/storage/logs/cachewarmer';
+
+        if (!is_dir($this->logPath)) {
+            // dir doesn't exist, make it
+            mkdir($this->logPath);
+        }
+
         parent::__construct($config);
     }
 

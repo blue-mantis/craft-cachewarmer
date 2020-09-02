@@ -69,15 +69,11 @@
 
 <h2>Sections</h2>
 
-<div id="nosections"{% if sectionData|length %} class="hidden"{% endif %}>
-  <p>{{ "No sections exist yet."|t }}</p>
-</div>
-
-{% if sectionData|length %}
-  {% for group in sectionData %}
+{% if sections|length %}
+  {% for group in sections %}
     {% if group.sections|length %}
       {% set siteId = group.site.id %}
-      {% if sectionData|length > 1 %}
+      {% if sections|length > 1 %}
         <h4 style="margin-bottom:10px;">{{ group.site.name }}</h4>
       {% endif %}
       <table id="sections" class="data fullwidth collapsible" style="margin-bottom:50px;">
@@ -85,7 +81,6 @@
         <th scope="col" class="thin">Include</th>
         <th scope="col">{{ "Name"|t }}</th>
         <th scope="col" style="width:100px;">{{ "Pages"|t }}</th>
-        {#<th scope="col">{{ "URL Format"|t }}</th>#}
         </thead>
         <tbody>
         {% for sectionData in group.sections %}
@@ -103,12 +98,50 @@
             </td>
             <th scope="row" data-title="{{ 'Name'|t }}"><a href="{{ url('settings/sections/' ~ sectionData.section.id) }}">{{ sectionData.section.name|t }}</a></th>
             <td data-title="{{ 'Entries'|t }}">{{ sectionData.count }}</td>
-            {#<td data-title="{{ 'URL Format'|t }}" dir="ltr">
-              {%- if section.isHomepage() -%}
-                <div data-icon="home" title="{{ 'Homepage'|t }}"></div>
-              {%- else -%}
-                {{ section.getUriFormat() }}
-              {%- endif -%}
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  {% endfor %}
+{% else %}
+  <div id="nosections" class="hidden">
+    <p>{{ "No sections to add"|t }}</p>
+  </div>
+{% endif %}
+
+{% if categoryGroups|length %}
+  {% for group in categoryGroups %}
+    {% if group.categoryGroups|length %}
+      {% set siteId = group.site.id %}
+      {% if categoryGroups|length > 1 %}
+        <h4 style="margin-bottom:10px;">{{ group.site.name }}</h4>
+      {% endif %}
+      <table id="sections" class="data fullwidth collapsible" style="margin-bottom:50px;">
+        <thead>
+        <th scope="col" class="thin">Include</th>
+        <th scope="col">{{ "Name"|t }}</th>
+        <th scope="col" style="width:100px;">{{ "Pages"|t }}</th>
+        {#<th scope="col">{{ "URL Format"|t }}</th>#}
+        </thead>
+        <tbody>
+        {% for categoryGroupData in group.categoryGroups %}
+          {% set handle = categoryGroupData.categoryGroup.handle %}
+          {% set categoryGroupSettings = settings.enabledCategoryGroups[siteId][handle] is defined ? settings.enabledCategoryGroups[siteId][handle] : false %}
+
+          <tr data-id="{{ categoryGroupData.categoryGroup.id }}" data-name="{{ categoryGroupData.categoryGroup.name|t }}">
+            <td class="thin">
+              {% set fieldname = 'enabledCategoryGroups[' ~ siteId ~ '][' ~ handle ~ '][enabled]' %}
+              {% set enabled = (categoryGroupSettings.enabled is defined and categoryGroupSettings.enabled is not empty ? categoryGroupSettings.enabled : false) %}
+              {{ forms.lightswitch({
+                name: fieldname,
+                on:   enabled,
+              }) }}
+            </td>
+            <th scope="row" data-title="{{ 'Name'|t }}"><a href="{{ url('settings/categories/' ~ categoryGroupData.categoryGroup.id) }}">{{ categoryGroupData.categoryGroup.name|t }}</a></th>
+            <td data-title="{{ 'Category Groups'|t }}">{{ categoryGroupData.count }}</td>
+            {#<td data-title="{{ 'URL Format'|t }}" dir="ltr" style="">
+              {{ categoryGroupData.categoryGroup.getSiteSettings[siteId].uriFormat }}
             </td>#}
           </tr>
         {% endfor %}
@@ -116,10 +149,15 @@
       </table>
     {% endif %}
   {% endfor %}
+{% else %}
+  <div id="nosections" class="hidden">
+    <p>{{ "No category groups to add"|t }}</p>
+  </div>
 {% endif %}
 
-{% if productTypesData|length %}
-  {% for group in productTypesData %}
+
+{% if productTypes|length %}
+  {% for group in productTypes %}
     {% if group.types|length %}
       {% set siteId = group.site.id %}
       <h2>Commerce Product Types</h2>
