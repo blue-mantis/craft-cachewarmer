@@ -23,7 +23,7 @@ use craft\web\Controller;
  */
 class DefaultController extends Controller
 {
-    //TODO For CI we need to add a key in the settings that we can check on here, before this is made allowAnonymous again
+    //TODO For CI we need to add a key in the settings that we can check on here, before this is made allowAnonymous againgi
     /*protected $allowAnonymous = ['run'];*/
 
     public function actionRun()

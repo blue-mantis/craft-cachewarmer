@@ -47,6 +47,6 @@ Or you can pipe in an array of elements to only warm those
 ## Cache Warmer Roadmap
 
 * Either add a page for displaying logs or simplify the logger service (or both)
-* Consider a way of preventing doubling up cachewarm requests on, say, an import where you want it to run at the end and not auto run after every element is saved
+* Add a public endpoint with some sort of basic auth for CI/CD
 
 Brought to you by [Bluemantis](https://bluemantis.com)
