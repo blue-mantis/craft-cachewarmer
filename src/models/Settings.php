@@ -19,6 +19,8 @@ class Settings extends Model
 
     public $enabledProductTypes = [];
 
+    public $customUrls;
+
     public function rules()
     {
         return [

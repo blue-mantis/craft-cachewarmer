@@ -12,6 +12,7 @@ class CacheWarmerTask extends BaseJob
     public $categoryIds = [];
     public $entryIds = [];
     public $productIds = [];
+    public $customUrls = [];
 
     public function execute($queue)
     {
@@ -50,6 +51,17 @@ class CacheWarmerTask extends BaseJob
                 \Craft::$app->queue->push(new ProductCacheWarmerTask([
                     'productIds' => $productBatch,
                     'siteId' => $siteId,
+                ]));
+            }
+        }
+
+        // Chunk off the products in no more than the max batch number set in the settings
+        if (count($this->customUrls)) {
+            $customUrlBatches = array_chunk($this->customUrls, $batchCount);
+            foreach ($customUrlBatches as $customUrlBatch) {
+                // Fire out a queue job
+                \Craft::$app->queue->push(new CustomUrlCacheWarmerTask([
+                    'customUrls' => $customUrlBatch,
                 ]));
             }
         }

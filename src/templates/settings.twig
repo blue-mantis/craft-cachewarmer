@@ -21,7 +21,7 @@
   label: "Max items per batch"|t,
   id: 'itemsPerBatch',
   name: 'itemsPerBatch',
-  instructions: "How many items to do as part of each batch job. 1 will create a queued job for each individual URL, 100 will create jobs of batches of 100, etc. If you're using the asyncqueues plugin this number can be as high as you want, but otherwise keep it reasonably low."|t,
+  instructions: "How many items to do as part of each batch job. 1 will create a queued job for each individual URL, 100 will create jobs of batches of 100, etc. If you're using the asyncqueues plugin this number can be fairly high, but otherwise keep it reasonably low."|t,
   value: settings.itemsPerBatch,
   autofocus: true,
   errors: settings.getErrors('itemsPerBatch'),
@@ -191,3 +191,15 @@
     {% endif %}
   {% endfor %}
 {% endif %}
+
+<h4 style="margin-bottom:10px;">Custom URLs</h4>
+<p>Enter any extra URLs you wanted warmed in the box below, such as popular search endpoints, etc.</p>
+<p>URLs should be entered one per line</p>
+
+{{ forms.textarea({
+  name: 'customUrls',
+  value: settings.customUrls,
+  rows: 30
+}) }}
+
+<div style="margin-bottom: 50px;"></div>

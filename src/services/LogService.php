@@ -19,7 +19,8 @@ class LogService extends Component
     protected $logPath;
     protected $logFile;
 
-    public function __construct(array $config = []) {
+    public function __construct(array $config = [])
+    {
         $this->logPath = CRAFT_BASE_PATH . '/storage/logs/cachewarmer';
 
         if (!is_dir($this->logPath)) {
